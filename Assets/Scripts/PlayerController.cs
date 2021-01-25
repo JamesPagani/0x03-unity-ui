@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 
 	//Score and health.
 	private int score;
+	public Text scoreText;
 	public int health = 5;
 
 	void Start ()
@@ -43,13 +45,20 @@ public class PlayerController : MonoBehaviour {
 			body.AddForce(speed * Time.deltaTime, 0, 0);
 	}
 
+	//Update the player score
+	void SetScoreText()
+	{
+		scoreText.text = "Score: " + score;
+	}
+
 	void OnTriggerEnter (Collider other)
     {
 		//Scoring points by picking coins.
 		if (other.gameObject.tag == "Pickup")
         {
 			score++;
-			Debug.Log("Score: " + score);
+			SetScoreText();
+			//Debug.Log("Score: " + score);
 			Destroy(other.gameObject);
 		}
 		//Losing life by rolling into a trap.
@@ -64,4 +73,6 @@ public class PlayerController : MonoBehaviour {
 			Debug.Log("You win!");
         }
     }
+
+
 }
