@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour {
 	private int score;
 	public Text scoreText;
 	public int health = 5;
+	public Text healthText;
+	public Image winloseBG;
+	public Text winloseText;
 
 	void Start ()
     {
@@ -22,14 +25,26 @@ public class PlayerController : MonoBehaviour {
 			speed = 500;
     }
 
+	IEnumerator LoadScene(float seconds)
+    {
+		yield return new WaitForSeconds(seconds);
+		SceneManager.LoadScene("maze");
+    }
+
 	void Update ()
     {
 		//Restart if you run out of health.
 		if (health == 0)
         {
-			Debug.Log("Game Over!");
-			SceneManager.LoadScene("maze");
+			winloseBG.gameObject.SetActive(true);
+			winloseText.text = "Game Over!";
+			winloseText.color = Color.white;
+			winloseBG.color = Color.red;
+			//Debug.Log("Game Over!");
+			StartCoroutine(LoadScene(3));
         }
+		if (Input.GetKeyDown("escape"))
+			SceneManager.LoadScene("menu");
     }
 	
 	void FixedUpdate ()
@@ -51,6 +66,12 @@ public class PlayerController : MonoBehaviour {
 		scoreText.text = "Score: " + score;
 	}
 
+	//Update the player's health
+	void SetHealthText()
+    {
+		healthText.text = "Health: " + health;
+    }
+
 	void OnTriggerEnter (Collider other)
     {
 		//Scoring points by picking coins.
@@ -65,12 +86,18 @@ public class PlayerController : MonoBehaviour {
 		if (other.gameObject.tag == "Trap")
         {
 			health--;
-			Debug.Log("Health: " + health);
+			SetHealthText();
+			//Debug.Log("Health: " + health);
         }
 		//Reaching the goal!
 		if (other.gameObject.tag == "Goal")
         {
-			Debug.Log("You win!");
+			winloseBG.gameObject.SetActive(true);
+			winloseText.text = "You Win!";
+			winloseText.color = Color.black;
+			winloseBG.color = Color.green;
+			//Debug.Log("You win!");
+			StartCoroutine(LoadScene(3));
         }
     }
 
